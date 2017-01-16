@@ -14,15 +14,77 @@ import (
 func buildInt(b *builder, op *lexing.Token) tast.Expr {
 	ret, e := strconv.ParseInt(op.Lit, 0, 64)
 	if e != nil {
-		b.Errorf(op.Pos, "invalid integer: %s", e)
+		b.CodeErrorf(op.Pos, "pl.cannotParseConst",
+			"invalid integer: %s", e)
+		return nil
+	}
+	// ret can be a negative number? no?
+	if ret > math.MaxUint32 {
+		b.CodeErrorf(op.Pos, "pl.cannotCast.integerOverFlowed",
+			"integer too large to fit in 32-bit")
 		return nil
 	}
 
-	if ret < math.MinInt32 {
-		b.Errorf(op.Pos, "integer too small to fit in 32-bit")
+	ref := tast.NewConstRef(types.NewNumber(ret), ret)
+	return tast.NewConst(ref)
+}
+
+func buildFloat(b *builder, op *lexing.Token) tast.Expr {
+	s := op.Lit
+	var ret int64
+	var index int
+	for i, r := range s {
+		if r == '.' {
+			b.CodeErrorf(
+				op.Pos, "pl.notYetSupported",
+				"float is not yet supported")
+			return nil
+		}
+		if r == 'e' || r == 'E' {
+			index = i
+			idxPart := s[0:i]
+			idxNum, e := strconv.ParseInt(idxPart, 0, 64)
+			if e != nil {
+				b.CodeErrorf(op.Pos, "pl.cannotParseConst",
+					"invalid integer: %s", e)
+				return nil
+			}
+			ret = idxNum
+			break
+		}
+	}
+	expPart := s[index+1:]
+	if len(expPart) == 0 {
+		b.CodeErrorf(
+			op.Pos, "pl.cannotParseConst.wrongFloatFormat",
+			"malformed exponent part for the number: %s", op.Lit)
 		return nil
-	} else if ret > math.MaxUint32 {
-		b.Errorf(op.Pos, "integer too large to fit in 32-bit")
+	}
+	if s[index+1] == 45 { // 45 for '-'
+		b.CodeErrorf(
+			op.Pos, "pl.notYetSupported",
+			"negative exponent index is not yet supported")
+		return nil
+	}
+	expNum, e := strconv.ParseInt(expPart, 0, 64)
+	if e != nil {
+		b.CodeErrorf(op.Pos, "pl.cannotParseConst",
+			"invalid integer: %s", e)
+		return nil
+	}
+
+	if expNum > 10 {
+		b.CodeErrorf(op.Pos, "pl.cannotCast.integerOverFlowed",
+			"integer too large to fit in 32-bit")
+		return nil
+	}
+	for ; expNum > 0; expNum-- {
+		ret *= 10
+	}
+
+	if ret > math.MaxUint32 {
+		b.CodeErrorf(op.Pos, "pl.cannotCast.integerOverFlowed",
+			"integer too large to fit in 32-bit")
 		return nil
 	}
 
@@ -109,7 +171,7 @@ func buildConstIdent(b *builder, ident *lexing.Token) tast.Expr {
 		return &tast.Ident{Token: ident, Ref: ref, Sym: s}
 	}
 
-	b.Errorf(ident.Pos, "%s is a %s; expect a const",
+	b.CodeErrorf(ident.Pos, "pl.expectConst", "%s is a %s; expect a const",
 		ident.Lit, tast.SymStr(s.Type),
 	)
 	return nil
@@ -119,6 +181,8 @@ func buildConstOperand(b *builder, op *ast.Operand) tast.Expr {
 	switch op.Token.Type {
 	case parse.Int:
 		return buildInt(b, op.Token)
+	case parse.Float:
+		return buildFloat(b, op.Token)
 	case parse.Ident:
 		return buildConstIdent(b, op.Token)
 	}
@@ -139,6 +203,8 @@ func buildOperand(b *builder, op *ast.Operand) tast.Expr {
 	switch op.Token.Type {
 	case parse.Int:
 		return buildInt(b, op.Token)
+	case parse.Float:
+		return buildFloat(b, op.Token)
 	case parse.Char:
 		return buildChar(b, op.Token)
 	case parse.String:

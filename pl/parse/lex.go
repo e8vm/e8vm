@@ -37,7 +37,7 @@ func lexG8(x *lexing.Lexer) *lexing.Token {
 		return t
 	}
 
-	x.Errorf("illegal char %q", r)
+	x.CodeErrorf("pl.illegalChar", "illegal char %q", r)
 	return x.MakeToken(lexing.Illegal)
 }
 

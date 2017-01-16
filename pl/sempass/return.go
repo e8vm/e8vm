@@ -13,12 +13,14 @@ func buildReturnStmt(b *builder, stmt *ast.ReturnStmt) tast.Stmt {
 		if b.retType == nil || b.retNamed {
 			return &tast.ReturnStmt{}
 		}
-		b.Errorf(pos, "expects return %s", fmtutil.Join(b.retType, ","))
+		b.CodeErrorf(pos, "pl.return.noReturnValue",
+			"expects return %s", fmtutil.Join(b.retType, ","))
 		return nil
 	}
 
 	if b.retType == nil {
-		b.Errorf(pos, "function expects no return value")
+		b.CodeErrorf(pos, "pl.return.expectNoReturn",
+			"function expects no return value")
 		return nil
 	}
 
@@ -31,7 +33,8 @@ func buildReturnStmt(b *builder, stmt *ast.ReturnStmt) tast.Stmt {
 	nret := len(b.retType)
 	nsrc := srcRef.Len()
 	if nret != nsrc {
-		b.Errorf(pos, "expect (%s), returning (%s)",
+		b.CodeErrorf(pos, "pl.return.typeMismatch",
+			"expect (%s), returning (%s), type mismatch",
 			fmtutil.Join(b.retType, ","), srcRef,
 		)
 		return nil
@@ -41,7 +44,8 @@ func buildReturnStmt(b *builder, stmt *ast.ReturnStmt) tast.Stmt {
 		t := b.retType[i]
 		srcType := srcRef.At(i).Type()
 		if !types.CanAssign(t, srcType) {
-			b.Errorf(pos, "expect (%s), returning (%s)",
+			b.CodeErrorf(pos, "pl.return.typeMismatch",
+				"expect (%s), returning (%s)",
 				fmtutil.Join(b.retType, ","), srcRef,
 			)
 			return nil

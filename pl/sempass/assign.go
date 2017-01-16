@@ -14,7 +14,7 @@ func assign(b *builder, dest, src tast.Expr, op *lexing.Token) tast.Stmt {
 	ndest := destRef.Len()
 	nsrc := srcRef.Len()
 	if ndest != nsrc {
-		b.CodeErrorf(op.Pos, "pl.cannotAssign",
+		b.CodeErrorf(op.Pos, "pl.cannotAssign.lengthMismatch",
 			"cannot assign(len) %s to %s; length mismatch",
 			nsrc, ndest)
 		return nil
@@ -23,7 +23,7 @@ func assign(b *builder, dest, src tast.Expr, op *lexing.Token) tast.Stmt {
 	for i := 0; i < ndest; i++ {
 		r := destRef.At(i)
 		if !r.Addressable {
-			b.CodeErrorf(op.Pos, "pl.cannotAssign",
+			b.CodeErrorf(op.Pos, "pl.cannotAssign.notAddressable",
 				"assigning to non-addressable")
 			return nil
 		}
@@ -31,7 +31,7 @@ func assign(b *builder, dest, src tast.Expr, op *lexing.Token) tast.Stmt {
 		destType := r.Type()
 		srcType := srcRef.At(i).Type()
 		if !types.CanAssign(destType, srcType) {
-			b.CodeErrorf(op.Pos, "pl.cannotAssign",
+			b.CodeErrorf(op.Pos, "pl.cannotAssign.typeMismatch",
 				"cannot assign %s to %s; type mismatch",
 				srcType, destType)
 			return nil
@@ -71,10 +71,11 @@ func opAssign(b *builder, dest, src tast.Expr, op *lexing.Token) tast.Stmt {
 	destRef := dest.R()
 	srcRef := src.R()
 	if !destRef.IsSingle() || !srcRef.IsSingle() {
-		b.Errorf(op.Pos, "%s %s %s", destRef, op.Lit, srcRef)
+		b.CodeErrorf(op.Pos, "pl.cannotAssign.notSingle",
+			"cannot assign %s %s %s", destRef, op.Lit, srcRef)
 		return nil
 	} else if !destRef.Addressable {
-		b.CodeErrorf(op.Pos, "pl.cannotAssign",
+		b.CodeErrorf(op.Pos, "pl.cannotAssign.notAddressable",
 			"assign to non-addressable")
 		return nil
 	}

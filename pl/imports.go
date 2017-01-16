@@ -35,14 +35,16 @@ func listImport(
 	for _, d := range fast.Imports.Decls {
 		p, as, e := ast.ImportPathAs(d)
 		if e != nil {
-			log.Errorf(d.Path.Pos, "invalid path string %s", d.Path.Lit)
+			log.CodeErrorf(d.Path.Pos, "pl.invalidImport",
+				"invalid path string %s", d.Path.Lit)
 			continue
 		}
 
 		pos := ast.ImportPos(d)
 		if other, found := m[as]; found {
-			log.Errorf(pos, "%s already imported", as)
-			log.Errorf(other.pos, "  previously imported here")
+			log.CodeErrorf(pos, "pl.duplImport", "%s already imported", as)
+			log.CodeErrorf(other.pos, "pl.duplImport.previousPos",
+				"  previously imported here")
 			continue
 		}
 

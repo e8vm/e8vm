@@ -68,6 +68,11 @@ func TestSingleFileBad(t *testing.T) {
 	o("missingReturn", `func f() int { if true { return 0 } }`)
 	o("missingReturn", `func f() int { if true return 0 }`)
 
+	o("return.typeMismatch", `func f() int {return 'a'}`)
+	o("return.typeMismatch", `func f() (int, int) {return 1, 'a'}`)
+	o("return.expectNoReturn", `func f() {return 1}`)
+	o("return.noReturnValue", `func f() int {return}`)
+
 	// confliction return 2 errors
 	c("declConflict.func", `func a() {}; func a() {}`)
 	c("declConflict.field", `struct A { b int; b int }`)
@@ -107,15 +112,14 @@ func TestSingleFileBad(t *testing.T) {
 	o("cannotAlloc", "func n() { var r = len; _ := r}")
 	o("cannotAlloc", "func n() { r := len; _ := r }")
 
-	o("cannotAssign", `struct A {}; func (a *A) f(){};
-		func main() { var a A; var f func()=a.f; _:=f }`)
-	o("cannotAssign", `struct A {}; func (a *A) f(){};
-		func main() { var a A; var f func(); f=a.f; _:=f }`)
-	o("cannotAssign", `func main() { var a [2]int; var b [3]int;
+	o("cannotAssign.typeMismatch", `struct A {}; func (a *A) f(){};
+		func main() { var a A; var f func()=a.f; _:= f }`)
+	o("cannotAssign.typeMismatch", `struct A {}; func (a *A) f(){};
+		func main() { var a A; var f func(); f=a.f; _:= f }`)
+	o("cannotAssign.typeMismatch", `func main() { var a [2]int; var b [3]int;
 		a=b}`)
-	// If the length are not the same, cannot assign either and it will be
-	// another error code
 
+	// others
 	o("multiRefInExprList", ` func r() (int, int) { return 3, 4 }
 		func p(a, b, c int) { }
 		func main() { p(r(), 5) }`)
@@ -124,6 +128,11 @@ func TestSingleFileBad(t *testing.T) {
 		if true { }
 		else { } }`)
 
+	o("illegalChar", "@")
+	o("invalidDotDot", "..")
+	o("invalidStructDecl", "type A struct {}")
+	o("star.onNotSingle", `func main() { var a=*A() };
+	func A() (*int, *int) { return nil, nil}`)
 	o("incStmt.notSingle", ` func f() (int, int) { return 0, 0 }
 		func main() { f()++ }`)
 

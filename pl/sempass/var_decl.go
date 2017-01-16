@@ -60,7 +60,7 @@ func buildVarDecl(b *builder, d *ast.VarDecl) *tast.Define {
 		ts := right.R().TypeList()
 		for _, t := range ts {
 			if !types.CanAssign(tdest, t) {
-				b.CodeErrorf(d.Eq.Pos, "pl.cannotAssign",
+				b.CodeErrorf(d.Eq.Pos, "pl.cannotAssign.typeMismatch",
 					"cannot assign type %s to type %s", t, tdest)
 				return nil
 			}

@@ -33,7 +33,7 @@ func lexOperator(x *lexing.Lexer, r rune) *lexing.Token {
 			x.Next()
 			r3 := x.Rune()
 			if r3 != '.' {
-				x.Errorf("expect ..., but see ..")
+				x.CodeErrorf("pl.invalidDotDot", "expect ..., but see ..")
 				return x.MakeToken(Operator)
 			}
 			x.Next()

@@ -12,10 +12,11 @@ func refAddress(b *builder, opTok *lexing.Token, B tast.Expr) tast.Expr {
 
 	bref := B.R()
 	if types.IsType(bref.T) || !bref.IsSingle() {
-		b.Errorf(opPos, "%q on %s", op, bref)
+		b.CodeErrorf(opPos, "pl.refAdrress.notSingle",
+			"%q on %s", op, bref)
 		return nil
 	} else if !bref.Addressable {
-		b.CodeErrorf(opPos, "pl.cannotReadAddress",
+		b.CodeErrorf(opPos, "pl.refAddress.notAddressable",
 			"reading address of non-addressable")
 		return nil
 	}
@@ -32,7 +33,7 @@ func binaryOpNil(b *builder, opTok *lexing.Token, A, B tast.Expr) tast.Expr {
 		return &tast.OpExpr{A: A, Op: opTok, B: B, Ref: ref}
 	}
 
-	b.Errorf(opTok.Pos, "%q on nils", op)
+	b.CodeErrorf(opTok.Pos, "pl.invalidExprStmt", "%q on nils", op)
 	return nil
 }
 
@@ -52,7 +53,8 @@ func binaryOpPtr(b *builder, opTok *lexing.Token, A, B tast.Expr) tast.Expr {
 		return &tast.OpExpr{A: A, Op: opTok, B: B, Ref: tast.NewRef(types.Bool)}
 	}
 
-	b.Errorf(opTok.Pos, "%q on pointers", op)
+	b.CodeErrorf(opTok.Pos, "pl.invalidExprStmt",
+		"%q on pointers", op)
 	return nil
 }
 
@@ -62,6 +64,7 @@ func binaryOpSlice(b *builder, opTok *lexing.Token, A, B tast.Expr) tast.Expr {
 	case "==", "!=":
 		return &tast.OpExpr{A: A, Op: opTok, B: B, Ref: tast.NewRef(types.Bool)}
 	}
-	b.Errorf(opTok.Pos, "%q on slices", op)
+	b.CodeErrorf(opTok.Pos, "pl.invalidExprStmt",
+		"%q on slices", op)
 	return nil
 }

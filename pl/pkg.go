@@ -60,7 +60,7 @@ func buildTests(b *builder, tops *syms.Table) (
 	n := len(tests)
 
 	if n > 100000 {
-		b.Errorf(nil, "too many tests in the package")
+		b.CodeErrorf(nil, "pl.tooManyTests", "too many tests in the package")
 		return
 	}
 
