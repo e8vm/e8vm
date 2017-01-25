@@ -60,6 +60,26 @@ type ElseStmt struct {
 	Next *ElseStmt // next else statement
 }
 
+// SwitchStmt is the swithc statement block
+type SwitchStmt struct {
+	Kw          *lexing.Token
+	Fallthrough bool
+	Cond        Expr // optional, if not expression detect, Cond = true
+	Lbrace      *lexing.Token
+	Body        []*Case
+	Rbrace      *lexing.Token
+	Semi        *lexing.Token
+}
+
+// Case is the inset statement block in switch
+// default is included here, Kw will determine it is case or default
+type Case struct {
+	Kw    *lexing.Token
+	Cond  Expr
+	Colon *lexing.Token
+	Stmts []Stmt
+}
+
 // ForStmt is a loop statement
 type ForStmt struct {
 	Kw        *lexing.Token
@@ -96,7 +116,7 @@ type BreakStmt struct{ Kw, Label, Semi *lexing.Token }
 
 // FallthroughStmt is the fallthrough statement
 // fallthrough
-// type FallthroughStmt struct{ Kw, Semi *lex8.Token }
+type FallthroughStmt struct{ Kw, Semi *lexing.Token }
 
 // EmptyStmt is an empty statement created by
 // an orphan semicolon
