@@ -13,12 +13,12 @@ type Pkg struct {
 
 	path string
 
-	funcs   []*Func
-	vars    []*HeapSym
-	tests   *testList
-	strPool *strPool
-	datPool *datPool
-
+	funcs      []*Func
+	vars       []*HeapSym
+	tests      *testList
+	strPool    *strPool
+	datPool    *datPool
+	vtablePool *vtablePool
 	// helper functions required for generating
 	g *gener
 }
@@ -26,11 +26,12 @@ type Pkg struct {
 // NewPkg creates a package with a particular path name.
 func NewPkg(path string) *Pkg {
 	return &Pkg{
-		path:    path,
-		lib:     link.NewPkg(path),
-		strPool: newStrPool(path),
-		datPool: newDatPool(path),
-		g:       newGener(),
+		path:       path,
+		lib:        link.NewPkg(path),
+		strPool:    newStrPool(path),
+		datPool:    newDatPool(path),
+		vtablePool: newVtablePool(path),
+		g:          newGener(),
 	}
 }
 
@@ -103,4 +104,14 @@ func (p *Pkg) NewString(s string) Ref {
 // NewHeapDat adds a byte array of heap static data.
 func (p *Pkg) NewHeapDat(bs []byte, unit int32, regSizeAlign bool) Ref {
 	return p.datPool.addDat(bs, unit, regSizeAlign)
+}
+
+// NewVtable adds a new vtable to the vatable pool.
+func (p *Pkg) NewVtable(i, s string) Ref {
+	return p.vtablePool.addTable(i, s)
+}
+
+// FillVtable fills a new vtable with entries.
+func (p *Pkg) FillVtable(i int, funcs []*FuncSym) {
+	p.vtablePool.vtables[i].fill(funcs)
 }
