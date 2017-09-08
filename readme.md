@@ -32,7 +32,7 @@ check lints, check circular dependencies and build tags. Running the
 `makefile` requires installing some tools.
 
 ```
-go get -u shanhu.io/smlvm/...
+go get -u shanhu.io/tools/...
 go get -u github.com/golang/lint/golint
 go get -u github.com/jstemmer/gotags
 ```
