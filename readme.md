@@ -2,32 +2,25 @@
 
 # Small VM
 
-Small Virtual Machine (`smlvm`) provides [a simple programming language][1]
-that compiles to a simulated, simple virtual machine. It is
-essentially a subset of Go programming language.
-
-This repository does not use any third party libraries; it depends on
-only Go standard library. The compiler is all written from scratch,
-and does not use LLVM.
-
-[Try in playground](https://g.smallrepo.com/play)
-
-Shanhuio provides both a [cloud IDE](https://g.smallrepo.com/),
-and local environment together with [Small Home](https://github.com/shanhuio/smlhome) for developement.
-
-[G language introduction][1]
-
-[1]: https://github.com/shanhuio/smlvm/wiki/G-Language-Introduction
-
-## To Use
-
-### Install
-
 ```
 go get -u shanhu.io/smlvm/...
 ```
 
-### make
+(Note that we use a custom domain rather than `github.com`.)
+
+`smlvm` is a small, simulated virtual machine with a 32-bit
+instruction set. It also comes with
+[a simple programming langauge called G][1]. The language has a modern
+Go language-like syntax, and a C-like semantics and runtime.
+
+The project is a pure Go project that only  depends on the standard
+library. The compiler is written from scratch.
+
+[Try G language in the playground.](https://g.smallrepo.com/play)
+
+[1]: https://github.com/shanhuio/smlvm/wiki/G-Language-Introduction
+
+## Using the `makefile`
 
 The project comes with a `makefile`, which formats the code files,
 check lints, check circular dependencies and build tags. Running the
@@ -39,35 +32,32 @@ go get -u github.com/golang/lint/golint
 go get -u github.com/jstemmer/gotags
 ```
 
-## What is Small VM
+## Comprehensible code
 
-### Approachable and Evolving Compiler
+Go language is already fairly readable. To keep the project
+modularized and properly structured, we follow two additional rules
+on coding:
 
-This project is written in Go. Each source file in this project has no
-more than 300 lines (80 max per line). Also there are no circular
-dependencies among files. As a result, the project architecture can be
-[visualized](https://shanhu.io/smlvm).
+1. Each file has no more than 300 lines. 80 characters max per line.
+2. No circular dependencies among files.
 
-[Package Docs](https://godoc.org/shanhu.io/smlvm).
+Note that Go language already forbids circular dependencies among
+packages.
 
-We hope that our design will make it easier for people to understand
-and add new features to the compiler and make it better.
+With no circular dependencies, the project architecture can be
+visualized as [a topology map][2]. We find such maps extremely useful
+on developing complicated projects.
 
-### The Language Targets Comprehension
+[2]: https://shanhu.io/smlvm
 
-Similar to Small VM, In G language, we have rules to keep the code
-clean: no circular dependency among files, no more then 300 lines each
-file, no more than 80 characters each.  For example, the architect of
-the std G language can be found [here](https://g.smallrepo.com/r/std)
-Together with the simple syntax system, we want create a language that
-targets code comprehension.  We believe that readable code is
-changeable code, and can continuously evolve.  We are also creating a
-[cloud IDE](https://g.smallrepo.com/) for G language users to share
-and read each others code.  Once code can be easily understood, online
-IDE's can form a community with network effects, and developers can
-easily customize a code -- their own or not -- to handle their special
-needs.
+Similarly, G language projects for the virtual machine also follows
+the same rules. In fact, it is enforced by our compiler.
+For example, G language's standard library can also be visualized into
+into [a topology map][3].
+
+[3]: https://g.smallrepo.com/r/std
+
 
 ## Copyright and License
 
-Copyright by Shanhu contributors. Licence Apache.
+Copyright by Shanhu Coding Society. Licence Apache.
