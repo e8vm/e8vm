@@ -12,7 +12,7 @@ and does not use LLVM.
 
 [Try in playground](https://smallrepo.com/play)
 
-Shanhuio provides both a [cloud IDE](https://smallrepo.com/), 
+Shanhuio provides both a [cloud IDE](https://g.smallrepo.com/), 
 and local environment together with [Small Home](https://github.com/shanhuio/smlhome) for developement
 
 [G language introduction][1]
@@ -57,16 +57,16 @@ and make it better.
 
 Similar to Small VM, In G language, we set up rules to make code clean: no circular dependency among files, 
 no more then 300 lines each file, no more than 80 characters each.
-For example, the architect of the std G language can be found [here](https://smallrepo.com/r/std)
+For example, the architect of the std G language can be found [here](https://g.smallrepo.com/r/std)
 Together with the simple syntax system, we want create a language that targets code comprehension.
 We believe that readable code is changeable code, and can continuously evolve.
-We are also creating a [cloud IDE](https://smallrepo.com/) for G language users to share and read each others code.
+We are also creating a [cloud IDE](https://g.smallrepo.com/) for G language users to share and read each others code.
 Once code can be easily understood, online IDE's can form a community with network effects,
 and developers can easily customize a code -- their own or not -- to handle their special needs.
 
 ## Community
 
-https://smallrepo.com/
+https://g.smallrepo.com/
 
 ## Copyright and License
 
