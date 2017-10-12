@@ -5,6 +5,8 @@ import (
 	"path"
 	"sort"
 	"strings"
+
+	"shanhu.io/smlvm/lexing"
 )
 
 type source struct {
@@ -104,6 +106,9 @@ func (s *source) listPkgs(lst []string, p string) ([]string, error) {
 	var subs []string
 	for _, dir := range dirs {
 		if strings.HasPrefix(dir, "_") {
+			continue
+		}
+		if !lexing.IsPkgName(dir) {
 			continue
 		}
 		subs = append(subs, path.Join(p, dir))
