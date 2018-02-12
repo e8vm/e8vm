@@ -98,7 +98,7 @@ func layout(m *Map) {
 
 // Layout layouts a DAG into a map.
 func Layout(g *Graph) (*Map, error) {
-	m, e := newMap(g) // build the map
+	m, e := NewMap(g) // build the map
 	if e != nil {
 		return nil, e
 	}

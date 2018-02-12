@@ -2,7 +2,7 @@ package dagvis
 
 // TopoSort topologically sorts the graph.
 func TopoSort(g *Graph) ([]string, error) {
-	m, err := newMap(g)
+	m, err := NewMap(g)
 	if err != nil {
 		return nil, err
 	}

@@ -74,16 +74,18 @@ func initMap(g *Graph) (*Map, error) {
 	return ret, nil
 }
 
-func newMap(g *Graph) (*Map, error) {
-	ret, e := initMap(g)
-	if e != nil {
-		return nil, e
+// NewMap creates a map from a graph where all the ins and outs
+// are populated, and nodes are mapped into layers.
+func NewMap(g *Graph) (*Map, error) {
+	ret, err := initMap(g)
+	if err != nil {
+		return nil, err
 	}
 
 	// make them into layers
-	layers, e := ret.makeLayers()
-	if e != nil {
-		return nil, e
+	layers, err := ret.makeLayers()
+	if err != nil {
+		return nil, err
 	}
 
 	ret.Nlayer = len(layers)
