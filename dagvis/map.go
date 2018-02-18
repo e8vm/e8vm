@@ -16,28 +16,17 @@ type Map struct {
 	Nedge  int
 	Ncrit  int
 	Nlayer int
-
-	IsTopDown bool
-}
-
-// AssignDisplayName assigns display names in a map.
-func (m *Map) AssignDisplayName(f func(s string) string) {
-	for _, n := range m.Nodes {
-		n.DisplayName = f(n.Name)
-	}
 }
 
 // Reverse reverses the map.
 func (m *Map) Reverse() {
 	for _, node := range m.Nodes {
-		node.X = m.Width - 1 - node.X
 		node.Ins, node.Outs = node.Outs, node.Ins
 		node.AllIns, node.AllOuts = node.AllOuts, node.AllIns
 		node.CritIns, node.CritOuts = node.CritOuts, node.CritIns
 		node.layer = m.Nlayer - 1 - node.layer
+		node.x = m.Width - 1 - node.x
 	}
-
-	m.IsTopDown = !m.IsTopDown
 }
 
 func initMap(g *Graph) (*Map, error) {

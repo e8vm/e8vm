@@ -2,7 +2,6 @@ package dagvis
 
 import (
 	"encoding/json"
-	"sort"
 )
 
 // N is a node in the minified DAG visualization result.
@@ -22,42 +21,25 @@ type M struct {
 }
 
 // Output returns a json'able object of a map.
-func Output(m *Map) *M {
+func Output(v *MapView) *M {
 	res := &M{
-		Height: m.Height,
-		Width:  m.Width,
+		Height: v.Height,
+		Width:  v.Width,
 		Nodes:  make(map[string]*N),
 	}
 
-	for name, node := range m.Nodes {
-		ins := make([]string, len(node.CritIns))
-		i := 0
-		for in := range node.CritIns {
-			ins[i] = in
-			i++
-		}
-
-		outs := make([]string, len(node.CritOuts))
-		i = 0
-		for out := range node.CritOuts {
-			outs[i] = out
-			i++
-		}
-
-		sort.Strings(ins)
-		sort.Strings(outs)
-
+	for name, node := range v.Nodes {
 		display := node.DisplayName
 		if display == "" {
-			display = node.Name
+			display = name
 		}
 
 		n := &N{
 			N:    display,
 			X:    node.X,
 			Y:    node.Y,
-			Ins:  ins,
-			Outs: outs,
+			Ins:  node.CritIns,
+			Outs: node.CritOuts,
 		}
 
 		res.Nodes[name] = n
@@ -66,7 +48,7 @@ func Output(m *Map) *M {
 	return res
 }
 
-func marshalMap(m *Map) []byte {
+func marshalMap(m *MapView) []byte {
 	res := Output(m)
 	ret, e := json.MarshalIndent(res, "", "    ")
 	if e != nil {

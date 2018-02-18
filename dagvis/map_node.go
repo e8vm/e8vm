@@ -2,9 +2,7 @@ package dagvis
 
 // MapNode is a node in the DAG graph
 type MapNode struct {
-	Name        string
-	DisplayName string
-	X, Y        int // layout position
+	Name string
 
 	Ins  map[string]*MapNode // direct input nodes
 	Outs map[string]*MapNode // direct output nodes
@@ -17,6 +15,7 @@ type MapNode struct {
 	CritIns  map[string]*MapNode // critical input nodes
 	CritOuts map[string]*MapNode // critical output nodes
 
+	x, y     int // for calculating layout position
 	layer    int // min layer
 	newLayer int // new layer after pushing
 

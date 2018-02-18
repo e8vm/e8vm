@@ -1,5 +1,9 @@
 package dagvis
 
+import (
+	"sort"
+)
+
 func critOutMaxLayer(n *MapNode) int {
 	ret := n.layer
 	for _, out := range n.CritOuts {
@@ -19,7 +23,7 @@ func avgCritInY(n *MapNode) int {
 
 	sum := 0
 	for _, in := range n.CritIns {
-		sum += in.Y
+		sum += in.y
 	}
 
 	return (sum + nIn/2) / nIn // round up
@@ -41,15 +45,28 @@ func findY(n *MapNode, tak map[int]bool) int {
 }
 
 func snapNearBy(n *MapNode, tak map[int]bool) {
-	y := n.Y
+	y := n.y
 	if tak[y-2] && !tak[y-1] {
-		n.Y--
+		n.y--
 	} else if !tak[y-1] && tak[y+2] && !tak[y+1] {
-		n.Y++
+		n.y++
 	}
 }
 
-func layout(m *Map) {
+func makeNodeList(m map[string]*MapNode) []string {
+	var ret []string
+	for name := range m {
+		ret = append(ret, name)
+	}
+	sort.Strings(ret)
+	return ret
+}
+
+func layout(m *Map) *MapView {
+	v := &MapView{
+		Nodes: make(map[string]*MapNodeView),
+	}
+
 	layers := m.SortedLayers()
 	slotTaken := make([]map[int]bool, m.Nlayer)
 	for i := range slotTaken {
@@ -61,13 +78,13 @@ func layout(m *Map) {
 		for _, node := range layer {
 			x := node.layer
 
-			node.X = x
+			node.x = x
 
 			tak := slotTaken[x]
-			node.Y = findY(node, tak)
+			node.y = findY(node, tak)
 			snapNearBy(node, tak)
 
-			y := node.Y
+			y := node.y
 			tak[y-1] = true
 			tak[y] = true
 			tak[y+1] = true
@@ -85,57 +102,67 @@ func layout(m *Map) {
 
 	ymax := 0
 	for _, node := range m.Nodes {
-		node.Y -= ymin
-		if node.Y > ymax {
-			ymax = node.Y
+		node.y -= ymin
+		if node.y > ymax {
+			ymax = node.y
+		}
+
+		v.Nodes[node.Name] = &MapNodeView{
+			Name:     node.Name,
+			X:        node.x,
+			Y:        node.y,
+			CritIns:  makeNodeList(node.CritIns),
+			CritOuts: makeNodeList(node.CritOuts),
 		}
 	}
 
-	m.Width = m.Nlayer
-	m.Height = ymax + 1
-	m.IsTopDown = false
+	v.Width = m.Nlayer
+	v.Height = ymax + 1
+
+	return v
 }
 
 // Layout layouts a DAG into a map.
-func Layout(g *Graph) (*Map, error) {
-	m, e := NewMap(g) // build the map
-	if e != nil {
-		return nil, e
+func Layout(g *Graph) (*Map, *MapView, error) {
+	m, err := NewMap(g) // build the map
+	if err != nil {
+		return nil, nil, err
 	}
 
-	pushTight(m) // push it tight
-	layout(m)    // assign coordinates
+	pushTight(m)   // push it tight
+	v := layout(m) // assign coordinates
 
-	return m, nil
+	return m, v, nil
 }
 
 // LayoutJSON layouts a DAG into a map in json format.
 func LayoutJSON(g *Graph) ([]byte, error) {
-	m, e := Layout(g)
-	if e != nil {
-		return nil, e
+	_, v, err := Layout(g)
+	if err != nil {
+		return nil, err
 	}
 
-	return marshalMap(m), nil
+	return marshalMap(v), nil
 }
 
 // RevLayout layouts a DAG into a map from right to left
 // its more suitable for top-down designed projects.
-func RevLayout(g *Graph) (*Map, error) {
-	m, e := Layout(g.Reverse())
-	if e != nil {
-		return nil, e
+func RevLayout(g *Graph) (*Map, *MapView, error) {
+	m, v, err := Layout(g.Reverse())
+	if err != nil {
+		return nil, nil, err
 	}
 	m.Reverse()
-	return m, nil
+	v.Reverse()
+	return m, v, nil
 }
 
 // RevLayoutJSON layouts a DAG into a map in json format.
 func RevLayoutJSON(g *Graph) ([]byte, error) {
-	m, e := RevLayout(g)
-	if e != nil {
-		return nil, e
+	_, v, err := RevLayout(g)
+	if err != nil {
+		return nil, err
 	}
 
-	return marshalMap(m), nil
+	return marshalMap(v), nil
 }
