@@ -62,7 +62,8 @@ func makeNodeList(m map[string]*MapNode) []string {
 	return ret
 }
 
-func layout(m *Map) *MapView {
+// LayoutMap creates the MapView for the given Map.
+func LayoutMap(m *Map) *MapView {
 	v := &MapView{
 		Nodes: make(map[string]*MapNodeView),
 	}
@@ -129,8 +130,8 @@ func Layout(g *Graph) (*Map, *MapView, error) {
 		return nil, nil, err
 	}
 
-	pushTight(m)   // push it tight
-	v := layout(m) // assign coordinates
+	pushTight(m)      // push it tight
+	v := LayoutMap(m) // assign coordinates
 
 	return m, v, nil
 }
