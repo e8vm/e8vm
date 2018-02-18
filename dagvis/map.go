@@ -9,9 +9,7 @@ import (
 
 // Map is a visualized DAG
 type Map struct {
-	Height int
-	Width  int
-	Nodes  map[string]*MapNode
+	Nodes map[string]*MapNode
 
 	Nedge  int
 	Ncrit  int
@@ -25,7 +23,6 @@ func (m *Map) Reverse() {
 		node.AllIns, node.AllOuts = node.AllOuts, node.AllIns
 		node.CritIns, node.CritOuts = node.CritOuts, node.CritIns
 		node.layer = m.Nlayer - 1 - node.layer
-		node.x = m.Width - 1 - node.x
 	}
 }
 
@@ -49,8 +46,8 @@ func initMap(g *Graph) (*Map, error) {
 		for _, out := range outs {
 			outNode, found := ret.Nodes[out]
 			if !found {
-				e := fmt.Errorf("missing node %q for %q", out, in)
-				return nil, e
+				err := fmt.Errorf("missing node %q for %q", out, in)
+				return nil, err
 			}
 
 			outNode.Ins[in] = inNode
@@ -86,23 +83,6 @@ func NewMap(g *Graph) (*Map, error) {
 	ret.buildCrits()
 
 	return ret, nil
-}
-
-// IsDAG checks if a graph is a valid DAG.
-// It returns true when all the graph, links are valid and
-// has no circular dependency.
-func IsDAG(g *Graph) (bool, error) {
-	m, e := initMap(g)
-	if e != nil {
-		return false, e
-	}
-
-	_, e = m.makeLayers()
-	if e != nil {
-		return false, e
-	}
-
-	return true, nil
 }
 
 func (m *Map) makeLayers() ([][]*MapNode, error) {
