@@ -22,21 +22,21 @@ func runeWidth(r rune) int {
 
 // Rect returns the display of a text line.
 // Ends of lines are ignored.
-func Rect(r io.Reader) (nline, maxWidth int, e error) {
+func Rect(r io.Reader) (nline, maxWidth int, err error) {
 	br := bufio.NewReader(r)
 	nline = 0
 	curWidth := 0
 	maxWidth = 0
 
 	for {
-		r, _, e := br.ReadRune()
-		if e == io.EOF {
+		r, _, err := br.ReadRune()
+		if err == io.EOF {
 			if curWidth > 0 {
 				nline++
 			}
 			break
-		} else if e != nil {
-			return 0, 0, e
+		} else if err != nil {
+			return 0, 0, err
 		}
 
 		if r == '\n' {
