@@ -8,11 +8,11 @@ import (
 
 func BenchmarkFindCircle(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		test()
+		benchmarkFindCircle()
 	}
 }
 
-func test() []*MapNode {
+func benchmarkFindCircle() []*MapNode {
 	ret := make(map[string][]string)
 
 	for i := 0; i < 1000; i++ {
