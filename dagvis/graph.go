@@ -99,6 +99,11 @@ func (g *Graph) Rename(f func(string) (string, error)) (*Graph, error) {
 			return nil, e
 		}
 
+		if len(vs) == 0 {
+			ret.Nodes[newK] = nil
+			continue
+		}
+
 		newVs := make([]string, 0, len(vs))
 		for _, v := range vs {
 			newV, e := f(v)
@@ -108,6 +113,8 @@ func (g *Graph) Rename(f func(string) (string, error)) (*Graph, error) {
 
 			newVs = append(newVs, newV)
 		}
+
+		sort.Strings(newVs)
 
 		ret.Nodes[newK] = newVs
 	}
