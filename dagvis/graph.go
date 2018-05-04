@@ -3,6 +3,7 @@
 package dagvis
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -90,25 +91,31 @@ func (g *Graph) Rename(f func(string) (string, error)) (*Graph, error) {
 		panic("rename function is nil")
 	}
 
+	nameMap := make(map[string]string)
+	for k := range g.Nodes {
+		var err error
+		nameMap[k], err = f(k)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	ret := new(Graph)
 	ret.Nodes = make(map[string][]string)
 
 	for k, vs := range g.Nodes {
-		newK, e := f(k)
-		if e != nil {
-			return nil, e
-		}
+		newKey := nameMap[k]
 
 		if len(vs) == 0 {
-			ret.Nodes[newK] = nil
+			ret.Nodes[newKey] = nil
 			continue
 		}
 
 		newVs := make([]string, 0, len(vs))
 		for _, v := range vs {
-			newV, e := f(v)
-			if e != nil {
-				return nil, e
+			newV, ok := nameMap[v]
+			if !ok {
+				return nil, fmt.Errorf("node %s missing in keys", v)
 			}
 
 			newVs = append(newVs, newV)
@@ -116,7 +123,7 @@ func (g *Graph) Rename(f func(string) (string, error)) (*Graph, error) {
 
 		sort.Strings(newVs)
 
-		ret.Nodes[newK] = newVs
+		ret.Nodes[newKey] = newVs
 	}
 
 	return ret, nil
