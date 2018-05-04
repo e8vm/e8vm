@@ -2,6 +2,10 @@
 // a structured, layered planer map.
 package dagvis
 
+import (
+	"sort"
+)
+
 // Graph is a directed graph
 type Graph struct {
 	Nodes map[string][]string
@@ -24,6 +28,10 @@ func (g *Graph) Reverse() *Graph {
 		for _, m := range lst {
 			ret[m] = append(ret[m], n)
 		}
+	}
+
+	for _, list := range ret {
+		sort.Strings(list)
 	}
 
 	return &Graph{Nodes: ret}
