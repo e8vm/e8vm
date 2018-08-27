@@ -3,7 +3,7 @@ language: go
 go_import_path: shanhu.io/smlvm
 
 go:
-    - "1.10"
+    - "1.11"
 
 install:
     - go get ./...
