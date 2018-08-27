@@ -11,9 +11,9 @@ func buildStarExpr(b *builder, expr *tast.StarExpr) *ref {
 	nilPointerPanic(b, addr.IR())
 	t := addr.Type().(*types.Pointer).T
 	retIR := codegen.NewAddrRef(
-		addr.IR(), // base
-		t.Size(),  // size
-		0,         // offset
+		addr.IR(),                     // base
+		t.Size(),                      // size
+		0,                             // offset
 		types.IsBasic(t, types.Uint8), // is byte?
 		t.RegSizeAlign(),              // is aligned?
 	)
