@@ -14,7 +14,7 @@ func assign(b *builder, dest, src tast.Expr, op *lexing.Token) tast.Stmt {
 	nsrc := srcRef.Len()
 	if ndest != nsrc {
 		b.CodeErrorf(op.Pos, "pl.cannotAssign.lengthMismatch",
-			"cannot assign(len) %s to %s; length mismatch",
+			"cannot assign(len) %d to %d; length mismatch",
 			nsrc, ndest)
 		return nil
 	}

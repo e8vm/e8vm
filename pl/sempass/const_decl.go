@@ -47,7 +47,7 @@ func buildConstDecl(b *builder, d *ast.ConstDecl) *tast.Define {
 	nleft := len(idents)
 	if nleft != nright {
 		b.CodeErrorf(d.Eq.Pos, "pl.cannotAssign.lengthMismatch",
-			"cannot assign(len) %s to %s; length mismatch",
+			"cannot assign(len) %d to %d; length mismatch",
 			nright, nleft)
 		return nil
 	}

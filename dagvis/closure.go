@@ -14,7 +14,7 @@ func Closure(m *Map, nodes []string) *Map {
 	for _, name := range nodes {
 		node := m.Nodes[name]
 		if node == nil {
-			panic(fmt.Errorf("%q node not found", node))
+			panic(fmt.Errorf("%q node not found", name))
 		}
 		nodeSet[name] = true
 
