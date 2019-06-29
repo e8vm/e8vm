@@ -4,10 +4,6 @@ import (
 	"shanhu.io/smlvm/lexing"
 )
 
-func isLetter(r rune) bool {
-	return r == '_' || lexing.IsLetter(r)
-}
-
 func lexNumber(x *lexing.Lexer) *lexing.Token {
 	isFloat := false
 	start := x.Rune()
@@ -51,19 +47,5 @@ func lexNumber(x *lexing.Lexer) *lexing.Token {
 }
 
 func lexIdent(x *lexing.Lexer) *lexing.Token {
-	r := x.Rune()
-	if !isLetter(r) {
-		panic("must start with letter")
-	}
-
-	for {
-		x.Next()
-		r := x.Rune()
-		if !isLetter(r) && !lexing.IsDigit(r) {
-			break
-		}
-	}
-
-	ret := x.MakeToken(Ident)
-	return ret
+	return lexing.LexIdent(x, Ident)
 }
