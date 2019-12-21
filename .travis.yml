@@ -1,18 +1,15 @@
 sudo: false
 language: go
-go_import_path: shanhu.io/smlvm
+go_import_path: shanhu.io/misc
 
 go:
-    - "1.11"
+    - "1.13"
 
 install:
-    - go get ./...
-    - go get shanhu.io/tools/cmd/smlchk
-    - go get github.com/golang/lint/golint
+    - env GO111MODULE=off go get ./...
+    - env GO111MODULE=off go get shanhu.io/sml/cmd/smake
 
 script:
     - test -z `gofmt -s -l .`
-    - go test ./...
-    - smlchk -path="shanhu.io/smlvm"
-    - golint ./...
-    - go vet ./...
+    - env GO111MODULE=off go test ./...
+    - env GO111MODULE=off smake
