@@ -1,13 +1,10 @@
-package parse
+package lexing
 
-import (
-	"shanhu.io/smlvm/lexing"
-)
-
-func lexNumber(x *lexing.Lexer) *lexing.Token {
+// LexNumber lexes a number usign golang's number format.
+func LexNumber(x *Lexer, tokInt, tokFloat int) *Token {
 	isFloat := false
 	start := x.Rune()
-	if !lexing.IsDigit(start) {
+	if !IsDigit(start) {
 		panic("not starting with a number")
 	}
 
@@ -15,33 +12,33 @@ func lexNumber(x *lexing.Lexer) *lexing.Token {
 	r := x.Rune()
 	if start == '0' && r == 'x' {
 		x.Next()
-		for lexing.IsHexDigit(x.Rune()) {
+		for IsHexDigit(x.Rune()) {
 			x.Next()
 		}
 	} else {
-		for lexing.IsDigit(x.Rune()) {
+		for IsDigit(x.Rune()) {
 			x.Next()
 		}
 		if x.Rune() == '.' {
 			isFloat = true
 			x.Next()
-			for lexing.IsDigit(x.Rune()) {
+			for IsDigit(x.Rune()) {
 				x.Next()
 			}
 		}
 		if x.Rune() == 'e' || x.Rune() == 'E' {
 			isFloat = true
 			x.Next()
-			if lexing.IsDigit(x.Rune()) || x.Rune() == '-' {
+			if IsDigit(x.Rune()) || x.Rune() == '-' {
 				x.Next()
 			}
-			for lexing.IsDigit(x.Rune()) {
+			for IsDigit(x.Rune()) {
 				x.Next()
 			}
 		}
 	}
 	if isFloat {
-		return x.MakeToken(Float)
+		return x.MakeToken(tokFloat)
 	}
-	return x.MakeToken(Int)
+	return x.MakeToken(tokInt)
 }
