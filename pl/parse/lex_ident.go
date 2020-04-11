@@ -45,7 +45,3 @@ func lexNumber(x *lexing.Lexer) *lexing.Token {
 	}
 	return x.MakeToken(Int)
 }
-
-func lexIdent(x *lexing.Lexer) *lexing.Token {
-	return lexing.LexIdent(x, Ident)
-}

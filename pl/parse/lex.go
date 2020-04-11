@@ -27,7 +27,7 @@ func lexG8(x *lexing.Lexer) *lexing.Token {
 	if lexing.IsDigit(r) {
 		return lexNumber(x)
 	} else if lexing.IsIdentLetter(r) {
-		return lexIdent(x)
+		return lexing.LexIdent(x, Ident)
 	}
 
 	// always make progress at this point
