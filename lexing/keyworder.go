@@ -1,5 +1,14 @@
 package lexing
 
+// KeywordSet creates a keyword set.
+func KeywordSet(words ...string) map[string]struct{} {
+	ret := make(map[string]struct{})
+	for _, k := range words {
+		ret[k] = struct{}{}
+	}
+	return ret
+}
+
 // Keyworder contains idents into keywords
 type Keyworder struct {
 	tokener Tokener

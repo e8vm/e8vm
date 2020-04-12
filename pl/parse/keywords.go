@@ -1,20 +1,16 @@
 package parse
 
-func keywordSet(s ...string) map[string]struct{} {
-	ret := make(map[string]struct{})
-	for _, k := range s {
-		ret[k] = struct{}{}
-	}
-	return ret
-}
+import (
+	"shanhu.io/smlvm/lexing"
+)
 
-var gKeywords = keywordSet(
+var gKeywords = lexing.KeywordSet(
 	"func", "var", "const", "struct", "import", "interface",
 	"if", "else", "for", "break", "continue", "return",
 	"switch", "case", "default", "fallthrough",
 )
 
-var golikeKeywords = keywordSet(
+var golikeKeywords = lexing.KeywordSet(
 	"func", "var", "const", "struct", "import",
 	"if", "else", "for",
 	"break", "continue", "return",
