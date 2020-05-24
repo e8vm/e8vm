@@ -171,8 +171,9 @@ func (p *parser) ExpectOp(op string) *lexing.Token {
 	}
 	t := p.Token()
 	if t.Type != Operator || t.Lit != op {
-		p.CodeErrorfHere("pl.expectOp",
-			"expect '%s', got %s", op, p.typeStr(t))
+		p.CodeErrorfHere(
+			"pl.expectOp", "expect '%s', got %s", op, p.typeStr(t),
+		)
 		return nil
 	}
 
@@ -181,8 +182,9 @@ func (p *parser) ExpectOp(op string) *lexing.Token {
 
 func (p *parser) ExpectKeyword(kw string) *lexing.Token {
 	if !p.SeeLit(Keyword, kw) {
-		p.ErrorfHere("expect keyword '%s', got %s",
-			kw, p.typeStr(p.Token()),
+		p.CodeErrorfHere(
+			"pl.expectKeyword",
+			"expect keyword '%s', got %s", kw, p.typeStr(p.Token()),
 		)
 		return nil
 	}
