@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"fmt"
 	"io"
 
 	"shanhu.io/smlvm/lexing"
@@ -85,15 +84,6 @@ func (p *parser) SeeOp(ops ...string) bool {
 	return false
 }
 
-func (p *parser) typeStr(t *lexing.Token) string {
-	if t.Type == Operator {
-		return fmt.Sprintf("'%s'", t.Lit)
-	} else if t.Type == Semi {
-		return "';'"
-	}
-	return TypeStr(t.Type)
-}
-
 func (p *parser) AcceptSemi() *lexing.Token {
 	if p.InError() {
 		return nil
@@ -133,7 +123,7 @@ func (p *parser) ExpectSemi() *lexing.Token {
 
 	if t.Type != Semi {
 		p.CodeErrorfHere("pl.missingSemi",
-			"expect ';', got %s", p.typeStr(t))
+			"expect ';', got %s", tokenTypeStr(t))
 		return nil
 	}
 	return p.Shift()
@@ -172,7 +162,7 @@ func (p *parser) ExpectOp(op string) *lexing.Token {
 	t := p.Token()
 	if t.Type != Operator || t.Lit != op {
 		p.CodeErrorfHere(
-			"pl.expectOp", "expect '%s', got %s", op, p.typeStr(t),
+			"pl.expectOp", "expect '%s', got %s", op, tokenTypeStr(t),
 		)
 		return nil
 	}
@@ -184,7 +174,7 @@ func (p *parser) ExpectKeyword(kw string) *lexing.Token {
 	if !p.SeeLit(Keyword, kw) {
 		p.CodeErrorfHere(
 			"pl.expectKeyword",
-			"expect keyword '%s', got %s", kw, p.typeStr(p.Token()),
+			"expect keyword '%s', got %s", kw, tokenTypeStr(p.Token()),
 		)
 		return nil
 	}

@@ -52,7 +52,7 @@ func parseOperand(p *parser) ast.Expr {
 
 	t := p.Token()
 	p.CodeErrorf(t.Pos, "pl.expectOperand",
-		"expect an operand, got %s", p.typeStr(t))
+		"expect an operand, got %s", tokenTypeStr(t))
 
 	return nil
 }
