@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"fmt"
+
 	"shanhu.io/smlvm/lexing"
 )
 
@@ -39,3 +41,12 @@ var Types = func() *lexing.Types {
 
 // TypeStr returns the name of a token type.
 func TypeStr(t int) string { return Types.Name(t) }
+
+func tokenTypeStr(t *lexing.Token) string {
+	if t.Type == Operator {
+		return fmt.Sprintf("'%s'", t.Lit)
+	} else if t.Type == Semi {
+		return "';'"
+	}
+	return TypeStr(t.Type)
+}
