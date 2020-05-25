@@ -37,9 +37,10 @@ func makeTokener(f string, r io.Reader, golike bool) lexing.Tokener {
 }
 
 func newParser(f string, r io.Reader, golike bool) (*parser, *lexing.Recorder) {
-	ret := new(parser)
-	ret.f = f
-	ret.golike = golike
+	ret := &parser{
+		f:      f,
+		golike: golike,
+	}
 	x := makeTokener(f, r, golike)
 	rec := lexing.NewRecorder(x)
 	ret.x = lexing.NewCommentRemover(rec)
