@@ -14,10 +14,7 @@ type semiInserter struct {
 // newSemiInserter creates a new statement lexer that inserts
 // semicolons into a token stream.
 func newSemiInserter(x lexing.Tokener) *semiInserter {
-	ret := new(semiInserter)
-	ret.x = x
-
-	return ret
+	return &semiInserter{x: x}
 }
 
 func makeSemi(p *lexing.Pos, lit string) *lexing.Token {
