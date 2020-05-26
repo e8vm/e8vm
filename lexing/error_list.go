@@ -78,13 +78,13 @@ func (lst *ErrorList) Print(w io.Writer) error {
 }
 
 // SingleErr returns an error array with one error.
-func SingleErr(e error) []*Error {
-	return []*Error{{Err: e}}
+func SingleErr(err error) []*Error {
+	return []*Error{{Err: err}}
 }
 
 // SingleCodeErr returns an error array with one error with ErrorCode.
-func SingleCodeErr(c string, e error) []*Error {
-	return []*Error{{Err: e, Code: c}}
+func SingleCodeErr(code string, err error) []*Error {
+	return []*Error{{Err: err, Code: code}}
 }
 
 // Errs retunrs the errors in the list
