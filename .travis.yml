@@ -1,9 +1,9 @@
 sudo: false
 language: go
-go_import_path: shanhu.io/misc
+go_import_path: shanhu.io/smlvm
 
 go:
-    - "1.13"
+    - "1.14"
 
 install:
     - env GO111MODULE=off go get ./...
