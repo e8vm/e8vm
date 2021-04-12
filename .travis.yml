@@ -3,7 +3,7 @@ language: go
 go_import_path: shanhu.io/smlvm
 
 go:
-    - "1.14"
+    - "1.16"
 
 install:
     - env GO111MODULE=off go get ./...
