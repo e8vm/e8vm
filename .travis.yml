@@ -6,10 +6,8 @@ go:
     - "1.16"
 
 install:
-    - env GO111MODULE=off go get ./...
-    - env GO111MODULE=off go get shanhu.io/sml/cmd/smake
+    - go get shanhu.io/sml/cmd/smake
 
 script:
-    - test -z `gofmt -s -l .`
-    - env GO111MODULE=off go test ./...
-    - env GO111MODULE=off smake
+    - smake
+    - go test ./...
